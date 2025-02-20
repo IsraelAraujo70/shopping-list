@@ -18,7 +18,11 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
-export function CreateListDialog({ children }: { children: React.ReactNode }) {
+interface CreateListDialogProps {
+  children: React.ReactNode;
+}
+
+export function CreateListDialog({ children }: CreateListDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const dispatch = useDispatch();
@@ -31,7 +35,7 @@ export function CreateListDialog({ children }: { children: React.ReactNode }) {
     if (!name.trim()) {
       toast({
         title: "Error",
-        description: "The list name is required",
+        description: "List name is required",
         variant: "destructive",
       });
       return;
@@ -80,13 +84,13 @@ export function CreateListDialog({ children }: { children: React.ReactNode }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-sm font-medium">
-              List name
+              List Name
             </Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter the list name"
+              placeholder="Enter list name"
               className={cn(
                 "w-full",
                 "focus-visible:ring-2 focus-visible:ring-ring"
@@ -109,4 +113,4 @@ export function CreateListDialog({ children }: { children: React.ReactNode }) {
       </DialogContent>
     </Dialog>
   );
-}
+} 

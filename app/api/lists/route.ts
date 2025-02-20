@@ -17,6 +17,9 @@ export async function POST(req: Request) {
         name,
         userId,
       },
+      include: {
+        items: true,
+      },
     });
 
     return NextResponse.json(list);

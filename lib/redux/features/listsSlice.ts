@@ -1,68 +1,65 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+interface ListItem {
+  id: string;
+  name: string;
+  completed: boolean;
+}
+
 interface List {
   id: string;
   name: string;
-  items: Item[];
-}
-
-interface Item {
-  id: string;
-  name: string;
-  quantity: number;
-  price?: number;
-  checked: boolean;
+  items: ListItem[];
 }
 
 interface ListsState {
-  lists: List[];
-  activeList: string | null;
+  items: List[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ListsState = {
-  lists: [],
-  activeList: null,
+  items: [],
   loading: false,
   error: null,
 };
 
-const listsSlice = createSlice({
+export const listsSlice = createSlice({
   name: 'lists',
   initialState,
   reducers: {
     setLists: (state, action: PayloadAction<List[]>) => {
-      state.lists = action.payload;
-    },
-    setActiveList: (state, action: PayloadAction<string>) => {
-      state.activeList = action.payload;
+      state.items = action.payload;
+      state.error = null;
     },
     addList: (state, action: PayloadAction<List>) => {
-      state.lists.push(action.payload);
+      state.items.push(action.payload);
+    },
+    removeList: (state, action: PayloadAction<string>) => {
+      state.items = state.items.filter(list => list.id !== action.payload);
     },
     updateList: (state, action: PayloadAction<List>) => {
-      const index = state.lists.findIndex(list => list.id === action.payload.id);
+      const index = state.items.findIndex(list => list.id === action.payload.id);
       if (index !== -1) {
-        state.lists[index] = action.payload;
+        state.items[index] = action.payload;
       }
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-    setError: (state, action: PayloadAction<string | null>) => {
+    setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
   },
 });
 
-export const {
-  setLists,
-  setActiveList,
-  addList,
-  updateList,
-  setLoading,
-  setError,
+export const { 
+  setLists, 
+  addList, 
+  removeList, 
+  updateList, 
+  setLoading, 
+  setError 
 } = listsSlice.actions;
 
 export default listsSlice.reducer;
