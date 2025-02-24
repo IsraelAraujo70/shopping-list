@@ -24,8 +24,8 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
     e.preventDefault();
     if (!name.trim()) {
       toast({
-        title: "Erro",
-        description: "O nome do item é obrigatório",
+        title: "Error",
+        description: "Item name is required",
         variant: "destructive",
       });
       return;
@@ -47,20 +47,20 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Falha ao adicionar item');
+        throw new Error('Failed to add item');
       }
 
       setName('');
       setEstimatedPrice('');
       onItemAdded();
       toast({
-        title: "Sucesso",
-        description: "Item adicionado com sucesso",
+        title: "Success",
+        description: "Item added successfully",
       });
     } catch (error) {
       toast({
-        title: "Erro",
-        description: "Falha ao adicionar item. Tente novamente.",
+        title: "Error",
+        description: "Failed to add item. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -70,10 +70,10 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="flex items-end gap-2">
-      <div className="flex-1 space-y-2">
+      <div className="flex flex-row gap-2 w-full">
         <Input
           type="text"
-          placeholder="Nome do item"
+          placeholder="Item name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className={cn(
@@ -83,7 +83,7 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
         />
         <Input
           type="number"
-          placeholder="Preço estimado (opcional)"
+          placeholder="Estimated price (optional)"
           value={estimatedPrice}
           onChange={(e) => setEstimatedPrice(e.target.value)}
           step="0.01"
@@ -104,7 +104,7 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
         )}
       >
         <Plus className="h-4 w-4" />
-        <span className="sr-only">Adicionar item</span>
+        <span className="sr-only">Add item</span>
       </Button>
     </form>
   );

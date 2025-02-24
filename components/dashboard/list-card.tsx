@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { removeList } from '@/lib/redux/features/listsSlice';
 import { useAuth } from '@clerk/nextjs';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface List {
   id: string;
@@ -75,13 +76,16 @@ export function ListCard({ list }: ListCardProps) {
     });
   };
 
+  const router = useRouter();
+
   return (
     <Card className={cn(
       "relative overflow-hidden",
       "transition-all duration-200",
       "hover:shadow-md dark:hover:shadow-primary/10",
-      "border-border/50"
-    )}>
+      "border-border/50",
+    )}
+    >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-base font-semibold">
           <Link 
@@ -132,7 +136,11 @@ export function ListCard({ list }: ListCardProps) {
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent 
+        className="cursor-pointer"
+        onClick={() => {
+        router.push(`/lists/${list.id}`);
+      }}>
         <p className={cn(
           "text-sm text-muted-foreground",
           "flex items-center gap-2"

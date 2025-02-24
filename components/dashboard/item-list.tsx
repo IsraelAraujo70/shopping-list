@@ -38,14 +38,14 @@ export function ItemList({ listId, items, onItemUpdated }: ItemListProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Falha ao atualizar item');
+        throw new Error('Failed to update item');
       }
 
       onItemUpdated();
     } catch (error) {
       toast({
-        title: "Erro",
-        description: "Falha ao atualizar item. Tente novamente.",
+        title: "Error",
+        description: "Failed to update item. Please try again.",
         variant: "destructive",
       });
     }
@@ -54,7 +54,7 @@ export function ItemList({ listId, items, onItemUpdated }: ItemListProps) {
   if (items.length === 0) {
     return (
       <p className="text-center text-muted-foreground py-4">
-        Nenhum item na lista ainda. Adicione seu primeiro item!
+        No items in the list yet. Add your first item!
       </p>
     );
   }
@@ -91,7 +91,7 @@ export function ItemList({ listId, items, onItemUpdated }: ItemListProps) {
               item.completed ? "text-muted-foreground" : "text-foreground",
               "font-medium"
             )}>
-              R$ {item.estimatedPrice.toFixed(2)}
+              $ {item.estimatedPrice.toFixed(2)}
             </span>
           )}
         </li>

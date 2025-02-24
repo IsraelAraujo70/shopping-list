@@ -8,6 +8,10 @@ import { setLists, setLoading, setError } from '@/lib/redux/features/listsSlice'
 import { useAuth } from '@clerk/nextjs';
 import { RootState } from '@/lib/redux/store';
 import { LoadingSkeleton } from '@/components/loading-skeleton';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { CreateListDialog } from '@/components/dashboard/create-list-dialog';
+import { Plus } from 'lucide-react';
 
 export default function DashboardPage() {
   const dispatch = useDispatch();
@@ -43,24 +47,55 @@ export default function DashboardPage() {
   }, [dispatch, getToken]);
 
   if (loading) {
-    return <LoadingSkeleton />;
+    return (
+      <div className="container mx-auto py-6">
+        <DashboardHeader />
+        <LoadingSkeleton />
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-lg font-medium text-destructive">{error}</p>
-        <p className="text-sm text-muted-foreground">
-          Please try refreshing the page.
-        </p>
+      <div className="container mx-auto py-6">
+        <DashboardHeader />
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="text-lg font-medium text-destructive">{error}</p>
+          <p className="text-sm text-muted-foreground">
+            Please try refreshing the page.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="container mx-auto py-6 space-y-6">
       <DashboardHeader />
-      <ListsGrid />
+      
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className={cn(
+              "text-2xl font-bold tracking-tight",
+              "md:text-3xl"
+            )}>
+              My Lists
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Create and manage your shopping lists here.
+            </p>
+          </div>
+          <CreateListDialog>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              New List
+            </Button>
+          </CreateListDialog>
+        </div>
+        
+        <ListsGrid />
+      </div>
     </div>
   );
 }
