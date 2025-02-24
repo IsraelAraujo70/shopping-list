@@ -94,7 +94,7 @@ export function PremiumFeatureSection() {
     },
     {
       title: "Share your lists limitlessly",
-      description: "Share your lists with your family and friends, and they can add items to your list. You can also add items to your list from their lists.",
+      description: "Share lists with more people than ever before. No more back and forth, no more confusion. With our premium feature, you can share lists with as many people as you want.",
       imagePosition: 'left' as const,
       icon: <Users className="h-6 w-6 text-primary" />
     }

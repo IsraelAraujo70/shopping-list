@@ -6,6 +6,8 @@ import { FeatureSection } from '@/components/landing/feature-section';
 import { SiteFooter } from '@/components/landing/site-footer';
 import { LoadingSkeleton } from '@/components/loading-skeleton';
 import { PremiumFeatureSection } from '@/components/landing/premium-propaganda';
+import { SavingsDashboard } from '@/components/landing/savings-dashboard';
+import { CallToAction } from '@/components/landing/call-to-action';
 
 export default function Home() {
   const { isLoaded } = useUser();
@@ -19,7 +21,9 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection />
         <FeatureSection />
-        <PremiumFeatureSection/>
+        <PremiumFeatureSection />
+        <SavingsDashboard />
+        <CallToAction />
       </main>
       <SiteFooter />
     </div>
