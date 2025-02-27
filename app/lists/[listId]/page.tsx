@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { AddItemForm } from '@/components/dashboard/add-item-form';
 import { ItemList } from '@/components/dashboard/item-list';
@@ -9,6 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { LoadingSkeleton } from '@/components/loading-skeleton';
+import { ShareDialog } from './share-dialog';
 
 interface List {
   id: string;
@@ -27,7 +28,7 @@ export default function ListPage({ params }: { params: { listId: string } }) {
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
 
-  const fetchList = async () => {
+  const fetchList = useCallback(async () => {
     try {
       const token = await getToken();
       const response = await fetch(`/api/lists/${params.listId}`, {
@@ -37,21 +38,21 @@ export default function ListPage({ params }: { params: { listId: string } }) {
       });
 
       if (!response.ok) {
-        throw new Error('Falha ao carregar a lista');
+        throw new Error('Failed to load list');
       }
 
       const data = await response.json();
       setList(data);
     } catch (error) {
-      console.error('Erro ao carregar lista:', error);
+      console.error('Error loading list:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [getToken, params.listId]);
 
   useEffect(() => {
     fetchList();
-  }, [params.listId]);
+  }, [fetchList]);
 
   if (loading) {
     return <LoadingSkeleton />;
@@ -60,18 +61,18 @@ export default function ListPage({ params }: { params: { listId: string } }) {
   if (!list) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
-        <p className="text-lg font-medium text-destructive">Lista não encontrada</p>
+        <p className="text-lg font-medium text-destructive">List not found</p>
         <Button asChild className="mt-4">
-          <Link href="/dashboard">Voltar para o Dashboard</Link>
+          <Link href="/dashboard">Back to Dashboard</Link>
         </Button>
       </div>
     );
   }
 
-  // Calcular a quantidade total de itens
+  // Calculate the total number of items
   const totalItemCount = list.items.reduce((total, item) => total + item.quantity, 0);
   
-  // Calcular o valor total estimado
+  // Calculate the total estimated price
   const totalEstimatedPrice = list.items.reduce((total, item) => {
     if (item.estimatedPrice) {
       return total + (item.estimatedPrice * item.quantity);
@@ -96,23 +97,25 @@ export default function ListPage({ params }: { params: { listId: string } }) {
             >
               <Link href="/dashboard">
                 <ArrowLeft className="h-4 w-4" />
-                <span className="sr-only">Voltar</span>
+                <span className="sr-only">Back</span>
               </Link>
             </Button>
             <h1 className="text-2xl font-bold tracking-tight">{list.name}</h1>
           </div>
           <div className="flex flex-col sm:flex-row sm:gap-4 text-sm text-muted-foreground">
-            <p>{list.items.length} {list.items.length === 1 ? 'tipo de item' : 'tipos de itens'}</p>
+            <p>{list.items.length} {list.items.length === 1 ? 'item type' : 'item types'}</p>
             <p className="sm:before:content-['•'] sm:before:mx-2 sm:before:text-muted-foreground/50">
-              {totalItemCount} {totalItemCount === 1 ? 'item no total' : 'itens no total'}
+              {totalItemCount} {totalItemCount === 1 ? 'item in total' : 'items in total'}
             </p>
             {totalEstimatedPrice > 0 && (
               <p className="sm:before:content-['•'] sm:before:mx-2 sm:before:text-muted-foreground/50">
-                Total estimado: ${totalEstimatedPrice.toFixed(2)}
+                Estimated total: ${totalEstimatedPrice.toFixed(2)}
               </p>
             )}
           </div>
         </div>
+        
+        <ShareDialog listId={list.id} />
       </div>
 
       <div className="space-y-4">

@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Users, Crown, ListChecks } from 'lucide-react';
+import { Plus, Users, Crown, ListChecks, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -28,6 +28,19 @@ export function DashboardHeader() {
           >
             <ListChecks className="h-4 w-4 mr-1" />
             Lists
+          </Link>
+          <Link 
+            href="/dashboard/shared" 
+            className={cn(
+              "flex items-center gap-1 px-2 py-1 text-sm font-medium transition-colors",
+              "hover:text-primary",
+              isActive('/dashboard/shared') 
+                ? "border-b-2 border-primary text-primary" 
+                : "text-muted-foreground"
+            )}
+          >
+            <Share2 className="h-4 w-4 mr-1" />
+            Shared
           </Link>
           <Link 
             href="/dashboard/family" 
