@@ -9,6 +9,7 @@ interface Item {
   id: string;
   name: string;
   estimatedPrice?: number | null;
+  quantity: number;
   completed: boolean;
 }
 
@@ -82,7 +83,7 @@ export function ItemList({ listId, items, onItemUpdated }: ItemListProps) {
             <span className={cn(
               item.completed && "line-through text-muted-foreground"
             )}>
-              {item.name}
+              {item.name} {item.quantity > 1 && <span className="text-muted-foreground ml-1">({item.quantity}x)</span>}
             </span>
           </div>
           {item.estimatedPrice && (
@@ -91,7 +92,7 @@ export function ItemList({ listId, items, onItemUpdated }: ItemListProps) {
               item.completed ? "text-muted-foreground" : "text-foreground",
               "font-medium"
             )}>
-              $ {item.estimatedPrice.toFixed(2)}
+              $ {(item.estimatedPrice * (item.quantity || 1)).toFixed(2)}
             </span>
           )}
         </li>

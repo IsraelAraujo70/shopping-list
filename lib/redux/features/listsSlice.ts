@@ -3,6 +3,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface ListItem {
   id: string;
   name: string;
+  estimatedPrice?: number | null;
+  quantity: number;
   completed: boolean;
 }
 

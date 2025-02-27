@@ -27,12 +27,13 @@ export async function POST(
       return new NextResponse('Não autorizado', { status: 401 });
     }
 
-    const { name, estimatedPrice } = await req.json();
+    const { name, estimatedPrice, quantity } = await req.json();
 
     const item = await prisma.item.create({
       data: {
         name,
         estimatedPrice,
+        quantity: quantity || 1,
         listId: params.listId,
       },
     });

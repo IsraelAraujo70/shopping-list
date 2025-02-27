@@ -21,6 +21,7 @@ model Item {
   id             String   @id @default(cuid())
   name           String
   estimatedPrice Float?
+  quantity       Int      @default(1)
   list           List     @relation(fields: [listId], references: [id])
   listId         String
   completed      Boolean  @default(false)

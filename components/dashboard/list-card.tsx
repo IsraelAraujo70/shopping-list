@@ -18,6 +18,7 @@ interface List {
   items: Array<{
     id: string;
     name: string;
+    quantity: number;
     completed: boolean;
   }>;
 }
@@ -31,6 +32,9 @@ export function ListCard({ list }: ListCardProps) {
   const { toast } = useToast();
   const dispatch = useDispatch();
   const { getToken } = useAuth();
+
+  // Calcular a quantidade total de itens
+  const totalItemCount = list.items?.reduce((total, item) => total + (item.quantity || 1), 0) || 0;
 
   const handleDelete = async () => {
     if (isDeleting) return;
@@ -141,12 +145,16 @@ export function ListCard({ list }: ListCardProps) {
         onClick={() => {
         router.push(`/lists/${list.id}`);
       }}>
-        <p className={cn(
-          "text-sm text-muted-foreground",
-          "flex items-center gap-2"
-        )}>
-          {list.items?.length || 0} items
-        </p>
+        <div className="flex flex-col text-sm text-muted-foreground">
+          <p className="flex items-center gap-2">
+            {list.items?.length || 0} {list.items?.length === 1 ? 'tipo de item' : 'tipos de itens'}
+          </p>
+          {totalItemCount > 0 && (
+            <p className="flex items-center gap-2">
+              {totalItemCount} {totalItemCount === 1 ? 'item no total' : 'itens no total'}
+            </p>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

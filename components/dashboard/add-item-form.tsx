@@ -16,6 +16,7 @@ interface AddItemFormProps {
 export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
   const [name, setName] = useState('');
   const [estimatedPrice, setEstimatedPrice] = useState('');
+  const [quantity, setQuantity] = useState('1');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { getToken } = useAuth();
@@ -26,6 +27,16 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
       toast({
         title: "Error",
         description: "Item name is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const parsedQuantity = parseInt(quantity);
+    if (isNaN(parsedQuantity) || parsedQuantity < 1) {
+      toast({
+        title: "Error",
+        description: "Quantity must be a positive number",
         variant: "destructive",
       });
       return;
@@ -43,6 +54,7 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
         body: JSON.stringify({
           name: name.trim(),
           estimatedPrice: estimatedPrice ? parseFloat(estimatedPrice) : null,
+          quantity: parsedQuantity,
         }),
       });
 
@@ -52,6 +64,7 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
 
       setName('');
       setEstimatedPrice('');
+      setQuantity('1');
       onItemAdded();
       toast({
         title: "Success",
@@ -78,6 +91,17 @@ export function AddItemForm({ listId, onItemAdded }: AddItemFormProps) {
           onChange={(e) => setName(e.target.value)}
           className={cn(
             "w-full",
+            "focus-visible:ring-2 focus-visible:ring-ring"
+          )}
+        />
+        <Input
+          type="number"
+          placeholder="Quantidade"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          min="1"
+          className={cn(
+            "w-1/4",
             "focus-visible:ring-2 focus-visible:ring-ring"
           )}
         />

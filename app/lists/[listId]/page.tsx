@@ -17,6 +17,7 @@ interface List {
     id: string;
     name: string;
     estimatedPrice?: number | null;
+    quantity: number;
     completed: boolean;
   }>;
 }
@@ -67,6 +68,17 @@ export default function ListPage({ params }: { params: { listId: string } }) {
     );
   }
 
+  // Calcular a quantidade total de itens
+  const totalItemCount = list.items.reduce((total, item) => total + item.quantity, 0);
+  
+  // Calcular o valor total estimado
+  const totalEstimatedPrice = list.items.reduce((total, item) => {
+    if (item.estimatedPrice) {
+      return total + (item.estimatedPrice * item.quantity);
+    }
+    return total;
+  }, 0);
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -89,9 +101,17 @@ export default function ListPage({ params }: { params: { listId: string } }) {
             </Button>
             <h1 className="text-2xl font-bold tracking-tight">{list.name}</h1>
           </div>
-          <p className="text-sm text-muted-foreground">
-            {list.items.length} {list.items.length === 1 ? 'item' : 'itens'}
-          </p>
+          <div className="flex flex-col sm:flex-row sm:gap-4 text-sm text-muted-foreground">
+            <p>{list.items.length} {list.items.length === 1 ? 'tipo de item' : 'tipos de itens'}</p>
+            <p className="sm:before:content-['•'] sm:before:mx-2 sm:before:text-muted-foreground/50">
+              {totalItemCount} {totalItemCount === 1 ? 'item no total' : 'itens no total'}
+            </p>
+            {totalEstimatedPrice > 0 && (
+              <p className="sm:before:content-['•'] sm:before:mx-2 sm:before:text-muted-foreground/50">
+                Total estimado: ${totalEstimatedPrice.toFixed(2)}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
