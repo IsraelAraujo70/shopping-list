@@ -256,7 +256,7 @@ export default function FamilyPage() {
                 onClick={handleCreateFamily}
                 disabled={isCreatingFamily}
               >
-                {isCreatingFamily ? 'Criando...' : 'Criar Família'}
+                {isCreatingFamily ? 'Creating...' : 'Create Family'}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -278,12 +278,12 @@ export default function FamilyPage() {
               <CardHeader>
                 <CardTitle>{family.name}</CardTitle>
                 <CardDescription>
-                  {family.members.length} {family.members.length === 1 ? 'membro' : 'membros'}
+                  {family.members.length} {family.members.length === 1 ? 'member' : 'members'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium">Membros:</h3>
+                  <h3 className="text-sm font-medium">Members:</h3>
                   <ul className="space-y-1">
                     {family.members.map((member) => (
                       <li key={member.id} className="flex items-center justify-between text-sm">
@@ -291,7 +291,7 @@ export default function FamilyPage() {
                           {member.userId} 
                           {member.role === 'owner' && (
                             <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                              Proprietário
+                              Owner
                             </span>
                           )}
                         </span>
@@ -319,19 +319,19 @@ export default function FamilyPage() {
                       onClick={() => setSelectedFamily(family)}
                     >
                       <UserPlus className="mr-2 h-4 w-4" />
-                      Convidar Membro
+                      Invite Member
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Convidar Membro</DialogTitle>
+                      <DialogTitle>Invite Member</DialogTitle>
                       <DialogDescription>
-                        Adicione um novo membro à família {selectedFamily?.name}
+                        Add a new member to the family {selectedFamily?.name}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                       <div className="space-y-2">
-                        <Label htmlFor="userId">ID do Usuário</Label>
+                        <Label htmlFor="userId">User ID</Label>
                         <Input
                           id="userId"
                           placeholder="Ex: user_2aB3cD4e5F6g7H8i"
@@ -339,7 +339,7 @@ export default function FamilyPage() {
                           onChange={(e) => setNewMemberId(e.target.value)}
                         />
                         <p className="text-xs text-muted-foreground">
-                          O ID do usuário pode ser encontrado nas configurações da conta
+                          The user ID can be found in the account settings
                         </p>
                       </div>
                     </div>
@@ -348,7 +348,7 @@ export default function FamilyPage() {
                         onClick={handleAddMember}
                         disabled={isAddingMember}
                       >
-                        {isAddingMember ? 'Adicionando...' : 'Adicionar Membro'}
+                        {isAddingMember ? 'Adding...' : 'Add Member'}
                       </Button>
                     </DialogFooter>
                   </DialogContent>
