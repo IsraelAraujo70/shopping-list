@@ -12,6 +12,7 @@ import { ReduxProvider } from '@/lib/redux/provider'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import './globals.css'
+import UserIdDisplay from '@/components/user-id-display'
 
 export const metadata: Metadata = {
   title: 'Shared Shopping List',
@@ -48,7 +49,7 @@ export default function RootLayout({
                     </a>
                   </div>
                   <div className="flex items-center gap-4">
-                    <nav>
+                    <nav className="flex items-center">
                       <SignedOut>
                         <SignUpButton mode="modal">
                           <Button variant="default" size="default">
@@ -57,6 +58,7 @@ export default function RootLayout({
                         </SignUpButton>
                       </SignedOut>
                       <SignedIn>
+                        <UserIdDisplay />
                         <UserButton
                           afterSignOutUrl="/"
                           appearance={{

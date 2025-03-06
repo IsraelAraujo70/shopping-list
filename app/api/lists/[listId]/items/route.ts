@@ -9,39 +9,53 @@ export async function POST(
   try {
     const { userId } = auth();
     if (!userId) {
-      return new NextResponse('Não autorizado', { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // Verifica se a lista pertence ao usuário
+    const listId = params.listId;
+    const { name, estimatedPrice, quantity } = await req.json();
+
+    // Check if the list belongs to the user or if the user has shared access
     const list = await prisma.list.findUnique({
       where: {
-        id: params.listId,
+        id: listId,
       },
     });
 
     if (!list) {
-      return new NextResponse('Lista não encontrada', { status: 404 });
+      return new NextResponse('List not found', { status: 404 });
     }
 
+    // If the user is not the owner, check if they have shared access
     if (list.userId !== userId) {
-      return new NextResponse('Não autorizado', { status: 401 });
-    }
+      const share = await prisma.$queryRaw`
+        SELECT * FROM "ListShare" 
+        WHERE "listId" = ${listId} AND "userId" = ${userId}
+      `;
 
-    const { name, estimatedPrice, quantity } = await req.json();
+      if (!share || !Array.isArray(share) || share.length === 0) {
+        return new NextResponse('Unauthorized', { status: 401 });
+      }
+
+      // Check if the user has permission to edit
+      if (!share[0].canEdit) {
+        return new NextResponse('You do not have permission to add items to this list', { status: 403 });
+      }
+    }
 
     const item = await prisma.item.create({
       data: {
         name,
         estimatedPrice,
         quantity: quantity || 1,
-        listId: params.listId,
+        listId,
       },
     });
 
     return NextResponse.json(item);
   } catch (error) {
     console.error('[ITEMS_POST]', error);
-    return new NextResponse('Erro interno', { status: 500 });
+    return new NextResponse('Internal error', { status: 500 });
   }
 }
 
@@ -52,24 +66,38 @@ export async function PATCH(
   try {
     const { userId } = auth();
     if (!userId) {
-      return new NextResponse('Não autorizado', { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
+    const listId = params.listId;
     const { itemId, completed } = await req.json();
 
-    // Verifica se a lista pertence ao usuário
+    // Check if the list belongs to the user or if the user has shared access
     const list = await prisma.list.findUnique({
       where: {
-        id: params.listId,
+        id: listId,
       },
     });
 
     if (!list) {
-      return new NextResponse('Lista não encontrada', { status: 404 });
+      return new NextResponse('List not found', { status: 404 });
     }
 
+    // If the user is not the owner, check if they have shared access
     if (list.userId !== userId) {
-      return new NextResponse('Não autorizado', { status: 401 });
+      const share = await prisma.$queryRaw`
+        SELECT * FROM "ListShare" 
+        WHERE "listId" = ${listId} AND "userId" = ${userId}
+      `;
+
+      if (!share || !Array.isArray(share) || share.length === 0) {
+        return new NextResponse('Unauthorized', { status: 401 });
+      }
+
+      // Check if the user has permission to edit
+      if (!share[0].canEdit) {
+        return new NextResponse('You do not have permission to update items in this list', { status: 403 });
+      }
     }
 
     const item = await prisma.item.update({
@@ -84,6 +112,6 @@ export async function PATCH(
     return NextResponse.json(item);
   } catch (error) {
     console.error('[ITEMS_PATCH]', error);
-    return new NextResponse('Erro interno', { status: 500 });
+    return new NextResponse('Internal error', { status: 500 });
   }
 } 

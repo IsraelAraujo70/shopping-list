@@ -1,15 +1,94 @@
 # Shared Shopping List
 
-A collaborative shopping list application that allows families and groups to manage their shopping lists in real-time. Built with Next.js, TypeScript, and modern web technologies.
+A shared shopping list application built with Next.js, Prisma, and Clerk.
 
 ## Features
 
-- Real-time collaborative shopping lists
 - User authentication with Clerk
-- Premium features with Stripe integration
-- Responsive design with Tailwind CSS
-- State management with Redux Toolkit
-- Database management with Prisma and PostgreSQL
+- Creation and management of shopping lists
+- Adding items with estimated prices and quantities
+- Automatic calculation of total estimated value
+- Marking items as completed
+- Families and list sharing
+- Responsive and user-friendly interface
+
+## Family and Sharing Functionality
+
+### Families
+
+- Creation of families to share shopping lists
+- Adding members to the family using user ID
+- Family member management (add/remove)
+- View all family members
+
+### List Sharing
+
+- Sharing lists with individual users
+- Sharing lists with all family members
+- Viewing lists shared by other users
+- Permission control (view/edit)
+- Removing shares
+
+## Technologies Used
+
+- **Frontend**: Next.js, React, Tailwind CSS, shadcn/ui
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: Clerk
+- **Hosting**: Vercel
+
+## Project Structure
+
+- `/app`: Application pages and routes
+- `/components`: Reusable components
+- `/lib`: Utilities and configurations
+- `/prisma`: Database schema and migrations
+
+## Data Models
+
+### List
+- id: String
+- name: String
+- userId: String
+- familyId: String (optional)
+- items: Item[]
+- shares: ListShare[]
+
+### Item
+- id: String
+- name: String
+- estimatedPrice: Float (optional)
+- quantity: Int
+- completed: Boolean
+- listId: String
+
+### Family
+- id: String
+- name: String
+- ownerId: String
+- members: FamilyMember[]
+- lists: List[]
+
+### FamilyMember
+- id: String
+- userId: String
+- familyId: String
+- role: String (owner, member)
+
+### ListShare
+- id: String
+- listId: String
+- userId: String
+- canEdit: Boolean
+
+## How to Use
+
+1. Create an account or log in
+2. Create shopping lists on the main page
+3. Add items to your lists
+4. Create families and add members
+5. Share your lists with family or friends
+6. Access lists shared with you in the "Shared" section
 
 ## Prerequisites
 

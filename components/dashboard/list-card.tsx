@@ -11,6 +11,7 @@ import { removeList } from '@/lib/redux/features/listsSlice';
 import { useAuth } from '@clerk/nextjs';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ShareDialog } from '@/app/lists/[listId]/share-dialog';
 
 interface List {
   id: string;
@@ -33,7 +34,7 @@ export function ListCard({ list }: ListCardProps) {
   const dispatch = useDispatch();
   const { getToken } = useAuth();
 
-  // Calcular a quantidade total de itens
+  // Calculate the total number of items
   const totalItemCount = list.items?.reduce((total, item) => total + (item.quantity || 1), 0) || 0;
 
   const handleDelete = async () => {
@@ -73,13 +74,6 @@ export function ListCard({ list }: ListCardProps) {
     }
   };
 
-  const handleShare = () => {
-    toast({
-      title: 'Coming Soon',
-      description: 'Sharing functionality will be available soon!',
-    });
-  };
-
   const router = useRouter();
 
   return (
@@ -104,20 +98,7 @@ export function ListCard({ list }: ListCardProps) {
           </Link>
         </CardTitle>
         <div className="flex items-center gap-1">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={handleShare}
-            className={cn(
-              "h-8 w-8",
-              "text-muted-foreground",
-              "hover:text-foreground hover:bg-secondary",
-              "focus-visible:ring-2 focus-visible:ring-ring"
-            )}
-          >
-            <Share2 className="h-4 w-4" />
-            <span className="sr-only">Share list</span>
-          </Button>
+          <ShareDialog listId={list.id} />
           <Button 
             variant="ghost" 
             size="icon"
@@ -147,11 +128,11 @@ export function ListCard({ list }: ListCardProps) {
       }}>
         <div className="flex flex-col text-sm text-muted-foreground">
           <p className="flex items-center gap-2">
-            {list.items?.length || 0} {list.items?.length === 1 ? 'tipo de item' : 'tipos de itens'}
+            {list.items?.length || 0} {list.items?.length === 1 ? 'item type' : 'item types'}
           </p>
           {totalItemCount > 0 && (
             <p className="flex items-center gap-2">
-              {totalItemCount} {totalItemCount === 1 ? 'item no total' : 'itens no total'}
+              {totalItemCount} {totalItemCount === 1 ? 'item in total' : 'items in total'}
             </p>
           )}
         </div>

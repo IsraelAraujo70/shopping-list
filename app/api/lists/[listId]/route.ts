@@ -27,7 +27,12 @@ export async function DELETE(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // Delete all items in the list first
+    // Delete all shares first
+    await prisma.$queryRaw`
+      DELETE FROM "ListShare" WHERE "listId" = ${params.listId}
+    `;
+
+    // Delete all items in the list
     await prisma.item.deleteMany({
       where: {
         listId: params.listId,
@@ -44,7 +49,7 @@ export async function DELETE(
     return new NextResponse(null, { status: 200 });
   } catch (error) {
     console.error('[LIST_DELETE]', error);
-    return new NextResponse('Internal Error', { status: 500 });
+    return new NextResponse('Internal error', { status: 500 });
   }
 }
 
@@ -55,12 +60,14 @@ export async function GET(
   try {
     const { userId } = auth();
     if (!userId) {
-      return new NextResponse('Não autorizado', { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
+
+    const listId = params.listId;
 
     const list = await prisma.list.findUnique({
       where: {
-        id: params.listId,
+        id: listId,
       },
       include: {
         items: true,
@@ -68,16 +75,25 @@ export async function GET(
     });
 
     if (!list) {
-      return new NextResponse('Lista não encontrada', { status: 404 });
+      return new NextResponse('List not found', { status: 404 });
     }
 
+    // Check if the user is the owner or has shared access
     if (list.userId !== userId) {
-      return new NextResponse('Não autorizado', { status: 401 });
+      // Check if the user has shared access
+      const share = await prisma.$queryRaw`
+        SELECT * FROM "ListShare" 
+        WHERE "listId" = ${listId} AND "userId" = ${userId}
+      `;
+
+      if (!share || !Array.isArray(share) || share.length === 0) {
+        return new NextResponse('Unauthorized', { status: 401 });
+      }
     }
 
     return NextResponse.json(list);
   } catch (error) {
     console.error('[LIST_GET]', error);
-    return new NextResponse('Erro interno', { status: 500 });
+    return new NextResponse('Internal error', { status: 500 });
   }
 } 
